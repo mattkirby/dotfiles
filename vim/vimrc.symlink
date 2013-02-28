@@ -61,7 +61,9 @@ set ruler                  " show the cursor position all the time
 set noshowcmd              " don't display incomplete commands
 "set redraw
 set number                 " line numbers
-set rnu                    " use relative numbering
+if exists('+relativenumber')
+  set rnu                    " use relative numbering
+endif
 set wildmenu               " turn on wild menu
 set wildmode=list:longest,full
 " set ch=2                   " command line height
