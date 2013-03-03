@@ -37,8 +37,13 @@ plugins=(git)
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
-export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/git/bin:/usr/local/MacGPG2/bin:/users/kirby/.rbenv/bin:/opt/local/bin:/usr/bin/puppet
+[ -f /opt/boxen/env.sh ] && source /opt/boxen/env.sh
 
-eval "$(rbenv init -)"
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/git/bin:/usr/local/MacGPG2/bin:/opt/local/bin:/usr/bin/puppet
+
+# eval "$(rbenv init -)"
 . /sw/bin/init.sh
 
+# Added for boxen
+# [ -f /opt/boxen/env.sh ] && source /opt/boxen/env.sh
+source /opt/boxen/env.sh
