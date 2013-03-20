@@ -86,6 +86,7 @@ set hidden              " Enable 'hidden' buffers
 "
 " Backups
 set directory=~/.vim/swp        " keep swp files under ~/.vim/swap
+set backupdir=~/Library/temp
 
 "
 " Searching
