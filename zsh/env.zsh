@@ -25,7 +25,7 @@ $(which dircolors > /dev/null) && [[ -f ~/.dircolors ]] && eval `dircolors ~/.di
 
 # Keychain
 # keychain -k mine
-[[ $UID -ne 0 ]] && eval `keychain --ignore-missing -q --eval --agents ssh,gpg --timeout 720 id_rsa`
+#[[ $UID -ne 0 ]] && eval `keychain --ignore-missing -q --eval --agents ssh,gpg --timeout 720 id_rsa`
 
 
 # Less Colors for Man Pages
