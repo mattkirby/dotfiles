@@ -13,6 +13,14 @@ ZSH_THEME="robbyrussell"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias dots="puppet apply -v ~/dotfiles/initialize.rb"·
+alias gam="python $HOME/Downloads/gam/gam.py"
+alias digs="dig +short"
+alias l="ls -l"
+alias infra="$HOME/Puppet Labs/puppetlabs-sysadmin/"
+alias gp="git push origin HEAD"
+alias genpass="/usr/bin/openssl rand -base64 30"
+alias fixairplay="sudo kill `ps -ax | grep 'coreaudiod' | grep 'sbin' |awk '{print $1}'`"
 
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
@@ -42,8 +50,10 @@ source $ZSH/oh-my-zsh.sh
 # Customize to your needs...
 # [ -f /opt/boxen/env.sh ] && source /opt/boxen/env.sh
 
-export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/git/bin:/usr/local/MacGPG2/bin:/opt/local/bin:/usr/bin/puppet
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/git/bin:/usr/local/MacGPG2/bin:/opt/local/bin:/usr/bin/puppet:/usr/local/munki:/Users/kirby/bin
 export RUBYOPT=rubygems
+export RUBYLIB=puppet-puppetdbquery/lib:$RUBYLIB
+export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
 #export ZSH=$HOME/dotfiles
 #export PROJECTS=~/Code
 #export WORK=~/PuppetLabs
