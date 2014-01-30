@@ -18,9 +18,11 @@ alias gam="python $HOME/Downloads/gam/gam.py"
 alias digs="dig +short"
 alias l="ls -l"
 alias infra="$HOME/Puppet Labs/puppetlabs-sysadmin/"
-alias gp="git push origin HEAD"
 alias genpass="/usr/bin/openssl rand -base64 30"
-alias fixairplay="sudo kill `ps -ax | grep 'coreaudiod' | grep 'sbin' |awk '{print $1}'`"
+alias xpass="/opt/bin/xkcd_password.py -w /opt/bin/2of12.txt -n 4"
+alias fixairplay="sudo kill `ps -ax | grep '[c]oreaudiod' | awk '{print $1}'`"
+alias gpull="git pull ; git fetch --all --prune ; git merged"
+alias pagent="puppet agent -t \"$@\""
 
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
@@ -54,6 +56,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/git/bin:/usr
 export RUBYOPT=rubygems
 export RUBYLIB=puppet-puppetdbquery/lib:$RUBYLIB
 export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
+export EDITOR=vim
 #export ZSH=$HOME/dotfiles
 #export PROJECTS=~/Code
 #export WORK=~/PuppetLabs
