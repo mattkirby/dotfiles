@@ -19,8 +19,14 @@ alias digs="dig +short"
 alias l="ls -l"
 alias infra="$HOME/Puppet Labs/puppetlabs-sysadmin/"
 alias gp="git push origin HEAD"
+alias xpass="/opt/bin/xkcd_password.py -w /opt/bin/2of12.txt -n 4"
 alias genpass="/usr/bin/openssl rand -base64 30"
 alias fixairplay="sudo kill `ps -ax | grep 'coreaudiod' | grep 'sbin' |awk '{print $1}'`"
+alias gpull="git pull ; git fetch --all --prune ; git merged"
+alias pagent="puppet agent -t \"$@\""
+
+deactivate_node() { ssh -A -t ningyo.ops.puppetlabs.net "sudo puppet node deactivate "$@" && sudo puppet cert clean "$@"" ;}
+test_args() { echo "Testing $@" && echo "Testing "$@"" ;}
 
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
@@ -69,9 +75,19 @@ fpath=($ZSH/zsh/functions $fpath)
 autoload -U compinit
 compinit
 
-# eval "$(rbenv init -)"
+if [ -e "$HOME/.rbenv" ]; then
+eval "$(rbenv init -)"
+else
+fi
+
+if [ -e /sw/bin/init.sh ]; then
 . /sw/bin/init.sh
+else
+fi
 
 # Added for boxen
+if [ -e /opt/boxen/env.sh ]; then
 [ -f /opt/boxen/env.sh ] && source /opt/boxen/env.sh
 source /opt/boxen/env.sh
+else
+fi
