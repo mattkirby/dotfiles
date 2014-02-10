@@ -21,7 +21,7 @@ alias infra="$HOME/Puppet Labs/puppetlabs-sysadmin/"
 alias gp="git push origin HEAD"
 alias xpass="/opt/bin/xkcd_password.py -w /opt/bin/2of12.txt -n 4"
 alias genpass="/usr/bin/openssl rand -base64 30"
-alias fixairplay="sudo kill `ps -ax | grep 'coreaudiod' | grep 'sbin' |awk '{print $1}'`"
+alias fixairplay="sudo kill `ps ax | grep 'coreaudiod' | grep 'sbin' |awk '{print $1}'`"
 alias gpull="git pull ; git fetch --all --prune ; git merged"
 alias pagent="puppet agent -t \"$@\""
 
