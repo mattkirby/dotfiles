@@ -24,6 +24,9 @@ alias fixairplay="sudo kill `ps -ax | grep '[c]oreaudiod' | awk '{print $1}'`"
 alias gpull="git pull ; git fetch --all --prune ; git merged"
 alias pagent="puppet agent -t \"$@\""
 
+deactivate_node() { ssh -A -t ningyo.ops.puppetlabs.net "sudo puppet node deactivate "$@" && sudo puppet cert clean "$@"" ;}
+test_args() { echo "Testing $@" && echo "Testing "$@"" ;}
+
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
 
