@@ -79,5 +79,5 @@ compinit
 . /sw/bin/init.sh
 
 # Added for boxen
-[ -f /opt/boxen/env.sh ] && source /opt/boxen/env.sh
-source /opt/boxen/env.sh
+#[ -f /opt/boxen/env.sh ] && source /opt/boxen/env.sh
+#source /opt/boxen/env.sh
