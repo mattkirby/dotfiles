@@ -29,6 +29,10 @@ deactivate_node() { ssh -A -t ningyo.ops.puppetlabs.net "sudo puppet node deacti
 deactivate_client_node() { ssh -A -t root@puppet-m-client.ops.puppetlabs.net "sudo puppet node deactivate "$@" && sudo puppet cert clean "$@"" ;}
 test_args() { echo "Testing $@" && echo "Testing "$@"" ;}
 
+# BSD Ports
+ports_find() { ( cd /usr/ports && make search name=$@ ) }
+ports_install() { ( cd $@ && make install ) }
+
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
 
@@ -85,6 +89,15 @@ export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
 #then
 #  source ~/.localrc
 #fi
+
+# Less Colors for Man Pages
+export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking
+export LESS_TERMCAP_md=$'\E[01;38;5;74m'  # begin bold
+export LESS_TERMCAP_me=$'\E[0m'           # end mode
+export LESS_TERMCAP_se=$'\E[0m'           # end standout-mode
+export LESS_TERMCAP_so=$'\E[38;5;246m'    # begin standout-mode - info box
+export LESS_TERMCAP_ue=$'\E[0m'           # end underline
+export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 
 fpath=($ZSH/zsh/functions $fpath)
 
