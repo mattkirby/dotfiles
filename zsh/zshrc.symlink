@@ -18,16 +18,56 @@ alias gam="python $HOME/Downloads/gam/gam.py"
 alias digs="dig +short"
 alias l="ls -l"
 alias infra="$HOME/Puppet Labs/puppetlabs-sysadmin/"
-alias gp="git push origin HEAD"
 alias xpass="/opt/bin/xkcd_password.py -w /opt/bin/2of12.txt -n 4"
-alias genpass="/usr/bin/openssl rand -base64 30"
+alias genpass="/usr/bin/openssl rand -base64 32"
 alias fixairplay="sudo kill `ps ax | grep 'coreaudiod' | grep 'sbin' |awk '{print $1}'`"
+alias fixtouchbar="pkill 'Touch Bar agent'; killall 'ControlStrip'"
 alias gpull="git pull ; git fetch --all --prune ; git merged"
 alias pagent="puppet agent -t \"$@\""
+alias flush_dns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
 
-deactivate_node() { ssh -A -t ningyo.ops.puppetlabs.net "sudo puppet node deactivate "$@" && sudo puppet cert clean "$@"" ;}
-deactivate_client_node() { ssh -A -t root@puppet-m-client.ops.puppetlabs.net "sudo puppet node deactivate "$@" && sudo puppet cert clean "$@"" ;}
-test_args() { echo "Testing $@" && echo "Testing "$@"" ;}
+bootstrap_node_pe_puppet_and_update() {
+  environment=${3:=production}
+  osversion=${4:=jessie}
+  peserver=${5:=pe-mom1-prod}
+  ssh root@$1 "echo 'setting hostname...' ; sed -i 's/debian/${2}/g' /etc/hosts && sed -i 's/debian/${2}/' /etc/hostname && shutdown -r & exit"
+  echo "Waiting for reboot"
+  sleep 30
+  ssh root@"${1}" "apt-get install -y curl && echo deb http://plops-debrepo.s3.amazonaws.com ${4} main | tee /etc/apt/sources.list.d/s3-debrepo.list && curl -s -o - http://plops-debrepo.s3.amazonaws.com/plops.gpg.key | apt-key add - && apt-get update && apt-get upgrade -y && apt-get install -y pe-agent && rm /etc/puppetlabs/mcollective/server.cfg ; puppet agent -t --environment ${3} --server pe-mom1-prod.ops.puppetlabs.net --waitforcert 15" }
+gitp() { git push origin $(git branch | grep \* | awk '{ print $2 }') }
+
+start_agent() {
+  if [ $(gpg-agent &> /dev/null ; echo $?) -ne 0 ]; then
+  gpg-agent --daemon --enable-ssh-support
+  fi}
+
+bootstrap_node_pe_centos() {
+  nodeip=$1
+  hostname=$2
+  server=${$3:-'puppet-next.ops.puppetlabs.net'}
+  penv=${$4:-'production'}
+  peurl=${$5:-'http://pm.puppetlabs.com/puppet-agent/2015.2.2/1.2.6/repos/el/7/PC1/x86_64/puppet-agent-1.2.6-1.el7.x86_64.rpm'}
+  caserver=${$6:-'pe-mom1-prod.ops.puppetlabs.net'}
+  domain='ops.puppetlabs.net'
+  ssh root@${node} "hostnamectl set-hostname ${hostname};
+                    nisdomainname ${domain}; reboot"
+  sleep 20
+  ssh root@${hostname}.${domain} "curl -L -O ${peurl};
+    yum localinstall $(echo ${peurl} | awk -F'/' '{print $NF}');
+    /opt/puppetlabs/bin/puppet agent -t --environment ${penv} --server ${server}"
+  ssh ${caserver} sudo puppet cert -s ${hostname}.${domain}
+  ssh root@${hostname}.${domain} "/opt/puppetlabs/bin/puppet agent -t --environment ${penv} --server ${server}"
+}
+
+GPG_TTY=`tty`
+export GPG_TTY
+
+#mytest() { "$@"
+# local status=$?
+# if [ status -ne 0 ]; then
+#   echo "error with $1"
+# fi
+# return $status }
 
 # BSD Ports
 ports_find() { ( cd /usr/ports && make search name=$@ ) }
@@ -58,13 +98,22 @@ plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
-# Customize to your needs...
-# [ -f /opt/boxen/env.sh ] && source /opt/boxen/env.sh
+export PATH=~/.rbenv/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/git/bin:/usr/local/sbin:/opt/local/bin:/usr/bin/puppet:/usr/local/munki:/Users/kirby/bin:/opt/puppet/bin
 
-export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/git/bin:/usr/local/MacGPG2/bin:/opt/local/bin:/usr/bin/puppet:/usr/local/munki:/Users/kirby/bin:$HOME/.rbenv/bin
-export RUBYOPT=rubygems
-export RUBYLIB=puppet-puppetdbquery/lib:$RUBYLIB
-export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
+##
+# GPG Agent - For use with SSH
+#
+if [ -f "${HOME}/.gpg-agent-info" ]; then
+  . "${HOME}/.gpg-agent-info"
+  export GPG_AGENT_INFO
+  export SSH_AUTH_SOCK
+  #export PINENTRY_USER_DATA="USE_CURSES=1"
+fi
+export GPG_TTY=$(tty)
+
+#export RUBYOPT=rubygems
+#export RUBYLIB=puppet-puppetdbquery/lib:$RUBYLIB
+#export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
 
 # Unlimited history
 #HISTFILE=$HOME/dotfiles/.zsh_eternal_history
@@ -80,7 +129,7 @@ export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
 # # http://superuser.com/questions/20900/bash-history-loss
 #PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
-#export ZSH=$HOME/dotfiles
+export ZSH=$HOME/dotfiles
 #export PROJECTS=~/Code
 #export WORK=~/PuppetLabs
 #for config_file ($ZSH/**/*.zsh) source $config_file
@@ -99,6 +148,10 @@ export LESS_TERMCAP_so=$'\E[38;5;246m'    # begin standout-mode - info box
 export LESS_TERMCAP_ue=$'\E[0m'           # end underline
 export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 
+export EDITOR=vim
+
+start_agent
+
 fpath=($ZSH/zsh/functions $fpath)
 
 autoload -U compinit
@@ -106,17 +159,5 @@ compinit
 
 if [ -e "$HOME/.rbenv" ]; then
 eval "$(rbenv init -)"
-else
-fi
-
-if [ -e /sw/bin/init.sh ]; then
-. /sw/bin/init.sh
-else
-fi
-
-# Added for boxen
-if [ -e /opt/boxen/env.sh ]; then
-[ -f /opt/boxen/env.sh ] && source /opt/boxen/env.sh
-source /opt/boxen/env.sh
 else
 fi

@@ -2,6 +2,8 @@
 
 scriptencoding utf-8
 set encoding=utf-8
+" https://stackoverflow.com/questions/16902317/vim-slow-with-ruby-syntax-highlighting
+set re=1
 
 call pathogen#infect()    " Use Pathogen for plugins
 
@@ -50,6 +52,9 @@ nmap <C-Down> <C-w>j
 nmap <C-Up> <C-w>k
 nmap <C-Right> <C-w>l
 
+" Syntastic puppet future parser
+let g:syntastic_puppet_puppet_args = '--parser=future'
+
  " let Vundle manage Vundle
  " required! 
  Bundle 'gmarik/vundle'
@@ -58,7 +63,7 @@ nmap <C-Right> <C-w>l
  "
  " original repos on github
 
-Bundle 'scrooloose/syntastic'
+Bundle 'vim-syntastic/syntastic'
 Bundle 'tpope/vim-fugitive'
 Bundle 'godlygeek/tabular'
 Bundle 'rodjek/vim-puppet'
