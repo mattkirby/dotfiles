@@ -98,7 +98,7 @@ plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
-export PATH=~/.rbenv/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/git/bin:/usr/local/sbin:/opt/local/bin:/usr/bin/puppet:/usr/local/munki:/Users/kirby/bin:/opt/puppet/bin
+export PATH="$HOME/.asdf/bin":~/.rbenv/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/git/bin:/usr/local/sbin:/opt/local/bin:/usr/bin/puppet:/usr/local/munki:/Users/kirby/bin:/opt/puppet/bin:/opt/puppetlabs/bin
 
 ##
 # GPG Agent - For use with SSH
@@ -156,6 +156,9 @@ fpath=($ZSH/zsh/functions $fpath)
 
 autoload -U compinit
 compinit
+
+# Hook direnv into your shell.
+eval "$(asdf exec direnv hook zsh)"
 
 if [ -e "$HOME/.rbenv" ]; then
 eval "$(rbenv init -)"
